@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { VideoPiPComponent } from './components/video-pip.component';
+import { VideoPiPComponent } from './components/video-pip/video-pip.component';
 
 export const routes: Routes = [
   {

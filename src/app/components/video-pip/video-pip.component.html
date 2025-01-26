@@ -1,0 +1,31 @@
+<div class="video-container">
+  <div class="video-wrapper">
+    <video
+      #mainVideo
+      src="assets/video.mov"
+      class="primary-video"
+      [autoplay]="true"
+      controls
+      (enterpictureinpicture)="onEnterPiP($event, 'main')"
+      (leavepictureinpicture)="onLeavePiP($event, 'main')"
+    ></video>
+    <video
+      #secondaryVideo
+      src="assets/video.mov"
+      class="secondary-video"
+      [autoplay]="false"
+      controls
+      (enterpictureinpicture)="onEnterPiP($event, 'secondary')"
+      (leavepictureinpicture)="onLeavePiP($event, 'secondary')"
+    ></video>
+    <video
+      #tertiaryVideo
+      src="assets/video.mov"
+      class="tertiary-video"
+      [autoplay]="false"
+      controls
+      (enterpictureinpicture)="onEnterPiP($event, 'secondary')"
+      (leavepictureinpicture)="onLeavePiP($event, 'secondary')"
+    ></video>
+  </div>
+</div>
