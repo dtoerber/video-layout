@@ -4,11 +4,11 @@ import { VideoPiPComponent } from './components/video-pip/video-pip.component';
 export const routes: Routes = [
   {
     path: 'pip',
-    component: VideoPiPComponent
+    component: VideoPiPComponent,
   },
   {
     path: '',
     redirectTo: 'pip',
     pathMatch: 'full',
-  }
+  },
 ];

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { NavComponent } from "./components/nav/nav.component";
+import { NavComponent } from './components/nav/nav.component';
 
 @Component({
   selector: 'app-root',
   imports: [NavComponent],
   template: `<app-nav></app-nav>`,
 })
-export class AppComponent { }
+export class AppComponent {}
