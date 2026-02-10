@@ -1,0 +1,23 @@
+<div class="sidenav-fill-wrapper">
+  <div class="outer-container" #boundary>
+    @for (slot of dropTargets(); track slot) {
+      <div
+        class="drop-target"
+        [attr.data-slot]="slot"
+        [style.width.px]="dragSize().width"
+        [style.height.px]="dragSize().height"
+      ></div>
+    }
+    <div
+      class="snap-rect"
+      #dragItem
+      cdkDrag
+      [cdkDragBoundary]="boundary"
+      (cdkDragStarted)="onDragStarted()"
+      (cdkDragEnded)="onDragEnded($event)"
+      [attr.data-slot]="currentSlot"
+    >
+      DRAG ME
+    </div>
+  </div>
+</div>

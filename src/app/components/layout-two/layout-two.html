@@ -1,0 +1,13 @@
+<div class="sidenav-fill-wrapper">
+  <div class="outer-container" #boundary>
+    <div
+      class="snap-rect"
+      cdkDrag
+      [cdkDragBoundary]="boundary"
+      [cdkDragConstrainPosition]="snapPosition"
+      [cdkDragFreeDragPosition]="dragPosition"
+    >
+      DRAG
+    </div>
+  </div>
+</div>

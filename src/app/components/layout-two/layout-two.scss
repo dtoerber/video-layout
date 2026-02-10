@@ -1,0 +1,58 @@
+/* Container to fill the <mat-sidenav-content> */
+.sidenav-fill-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fafafa;
+  overflow: hidden;
+}
+
+/* The 80% centered container */
+.outer-container {
+  width: 80%;
+  height: 80%;
+  border: 2px dashed #bbb;
+  background-color: #ffffff;
+  position: relative;
+}
+
+/* The draggable rectangle */
+.snap-rect {
+  position: absolute;
+  width: 80px;
+  height: 160px;
+  top: 0;
+  left: 0;
+  background-color: #673ab7;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: grab;
+  border-radius: 4px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+
+  /* Critical: Position absolute so it moves relative to .outer-container */
+  position: absolute;
+
+  /* Only animate when the user IS dragging/snapping,
+     but NOT when the window is resizing */
+  transition: transform 0.15s cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Keep the transition active while dragging for the "snap" effect */
+.cdk-drag-dragging {
+  transition: transform 0.15s ease-out !important;
+}
+
+.snap-rect:active {
+  cursor: grabbing;
+}
+
+/* Force zero transition during resize if the "drifting" look persists */
+.resize-active .snap-rect {
+  transition: none !important;
+}
