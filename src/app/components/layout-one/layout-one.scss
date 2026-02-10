@@ -1,6 +1,6 @@
 .container {
   display: grid;
-  height: 100vh;
+  height: calc(100vh - 64px);
   /* Columns are now dynamic: first column follows the video width */
   grid-template-columns: var(--video-width, 640px) 1fr 1fr;
   grid-template-rows: var(--video-height, 360px) 1fr;
@@ -36,12 +36,15 @@
 .grid-bottom {
   grid-area: bottom;
   background: #2a2a2a;
+  border: 1px solid red;
 }
 .upper-middle {
   grid-area: middle;
   background: #333;
+  border: 1px solid green;
 }
 .upper-right {
   grid-area: right;
   background: #333;
+  border: 1px solid purple;
 }
