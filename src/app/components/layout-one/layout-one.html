@@ -1,0 +1,14 @@
+<div
+  class="container"
+  [style.--video-width.px]="resizeService.videoWidth()"
+  [style.--video-height.px]="resizeService.calculateHeight(resizeService.videoWidth())"
+>
+  <section class="video">
+    Video (16:9)
+    <div class="resizer" (mousedown)="startResizing($event)"></div>
+  </section>
+
+  <section class="upper-middle">Upper Middle</section>
+  <section class="upper-right">Upper Right</section>
+  <section class="grid-bottom">Grid Bottom</section>
+</div>
