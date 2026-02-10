@@ -15,3 +15,9 @@
   top: 0;
   z-index: 1;
 }
+
+@media (max-height: 480px) and (orientation: landscape) {
+  .mat-toolbar.mat-primary {
+    display: none;
+  }
+}
