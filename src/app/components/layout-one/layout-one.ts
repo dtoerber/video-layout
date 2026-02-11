@@ -1,10 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, Renderer2 } from '@angular/core';
 import { ResizeService } from '../../services/resize.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-layout-one',
+  imports: [MatButtonModule, MatIconModule],
   templateUrl: './layout-one.html',
-  styleUrl: './layout-one.scss',
+  styleUrls: ['./layout-one.scss', './extra.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LayoutOne {

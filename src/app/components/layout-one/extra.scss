@@ -1,0 +1,89 @@
+// =============================================================================
+// Video Section
+// =============================================================================
+
+.video {
+  background-color: #1a1a1a;
+  border: 2px solid #4da3ff;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+  box-sizing: border-box;
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+// =============================================================================
+// Resizer Handle
+// =============================================================================
+
+.video {
+  position: relative;
+  display: flex;
+
+  video {
+    max-width: 100%;
+  }
+}
+
+.resizer {
+  width: 4px; // Increased slightly for better visibility
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: col-resize;
+  z-index: 10;
+  background: transparent;
+  transition: background 0.2s;
+
+  // Crucial: Allows the circular button to be wider than the 4px bar
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+
+  &:hover {
+    background: #4da3ff;
+
+    .resizer-handle-btn {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .resizer-handle-btn {
+    opacity: 0; // Hidden by default
+    transform: scale(0.5); // Small animation effect
+    transition: all 0.2s ease-in-out;
+
+    position: absolute;
+    z-index: 20;
+    flex-shrink: 0; // Prevents the button from shrinking to fit the 4px width
+
+    // Ensure the button doesn't block the "mousedown" for resizing
+    pointer-events: none;
+
+    // Customizing the Material Fab to be a small circle
+    width: 32px !important;
+    height: 32px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
+}
+
+.resizer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -5px; // Extends hit area 5px to the left
+  right: -5px; // Extends hit area 5px to the right
+  bottom: 0;
+  background: transparent;
+}

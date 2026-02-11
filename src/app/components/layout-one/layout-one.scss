@@ -33,17 +33,17 @@ $gap: 0px;
   overflow: hidden;
 
   // Default: Standard Desktop
-  grid-template-columns: var(--actual-video-width) 1fr 1fr;
+  grid-template-columns: var(--actual-video-width) 1fr 200px 50px;
   grid-template-rows:
     var(--panel-row-height)
     var(--panel-row-height)
     var(--panel-row-height)
     1fr;
   grid-template-areas:
-    'video  um-1  ur-1'
-    'video  um-2  ur-2'
-    'video  um-3  ur-3'
-    'bottom bottom bottom';
+    'video  upper-middle-1  upper-right-1  gutter'
+    'video  upper-middle-2  upper-right-2  gutter'
+    'video  upper-middle-3  upper-right-2  gutter'
+    'bottom bottom          bottom         bottom';
 }
 
 // =============================================================================
@@ -53,64 +53,28 @@ $gap: 0px;
 .video {
   grid-area: video;
 }
-.um-1 {
-  grid-area: um-1;
+.upper-middle-1 {
+  grid-area: upper-middle-1;
 }
-.um-2 {
-  grid-area: um-2;
+.upper-middle-2 {
+  grid-area: upper-middle-2;
 }
-.um-3 {
-  grid-area: um-3;
+.upper-middle-3 {
+  grid-area: upper-middle-3;
 }
-.ur-1 {
-  grid-area: ur-1;
+.upper-right-1 {
+  grid-area: upper-right-1;
 }
-.ur-2 {
-  grid-area: ur-2;
+.upper-right-2 {
+  grid-area: upper-right-2;
 }
-.ur-3 {
-  grid-area: ur-3;
+
+.gutter {
+  grid-area: gutter;
 }
+
 .grid-bottom {
   grid-area: bottom;
-}
-
-// =============================================================================
-// Video Section
-// =============================================================================
-
-.video {
-  background-color: #1a1a1a;
-  border: 2px solid #4da3ff;
-  position: relative;
-  overflow: hidden;
-  min-height: 0;
-  box-sizing: border-box;
-
-  video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-}
-
-// =============================================================================
-// Resizer Handle
-// =============================================================================
-
-.resizer {
-  width: 3px;
-  height: 100%;
-  // background: rgba(255, 255, 255, 0.1);
-  position: absolute;
-  right: 0;
-  top: 0;
-  cursor: col-resize;
-  transition: background 0.2s;
-
-  &:hover {
-    background: #4da3ff;
-  }
 }
 
 // =============================================================================
@@ -125,16 +89,20 @@ $gap: 0px;
   padding: 8px;
 }
 
-.um-1,
-.um-2,
-.um-3 {
+.upper-middle-1,
+.upper-middle-2,
+.upper-middle-3 {
   border-color: green;
 }
 
-.ur-1,
-.ur-2,
-.ur-3 {
+.upper-right-1,
+.upper-right-2,
+.upper-right-3 {
   border-color: purple;
+}
+
+.gutter {
+  border-color: cyan;
 }
 
 // =============================================================================
@@ -170,9 +138,9 @@ $gap: 0px;
       var(--panel-row-height)
       1fr;
     grid-template-areas:
-      'video  um-1  ur-1'
-      'video  um-2  ur-2'
-      'video  um-3  ur-3'
+      'video  upper-middle-1  upper-right-1'
+      'video .upper-middle-2  upper-right-2'
+      'video upper-middle-3  upper-right-3'
       'video  bottom bottom';
   }
 
