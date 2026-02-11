@@ -118,10 +118,10 @@ $gap: 0px;
 
     grid-template-rows: 1fr 1fr 1fr 1fr;
     grid-template-areas:
-      'video  upper-middle-1  upper-right-1'
-      'video  upper-middle-2  upper-right-2'
-      'video  upper-middle-3  upper-right-3'
-      'video  bottom          bottom';
+      'video  upper-middle-1  upper-right-1 gutter'
+      'video  upper-middle-2  upper-right-2 gutter'
+      'video  upper-middle-3  upper-right-2 gutter'
+      'video  bottom          bottom        bottom';
   }
 }
 
