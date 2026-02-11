@@ -1,219 +1,89 @@
 // =============================================================================
-// Layout Configuration
-// =============================================================================
-
-$nav-height: 64px;
-$min-grid-height: 200px;
-$gap: 0px;
-
-// =============================================================================
-// Page Container — CSS custom property calculations
-// =============================================================================
-
-.page {
-  // Derive video height from width (16:9)
-  --video-height: calc(var(--video-width, 640) * 9 / 16);
-
-  // Maximum height that guarantees space for grid-bottom
-  --max-video-height: calc(100vh - #{$nav-height} - #{$min-grid-height} - #{$gap});
-
-  // Maximum width to ensure panels always get space
-  --max-video-width: calc(100vw - 200px);
-
-  // Actual dimensions: constrained by whichever is smaller
-  --actual-video-height: min(var(--video-height), var(--max-video-height));
-  --actual-video-width: min(calc(var(--actual-video-height) * 16 / 9), var(--max-video-width));
-
-  // Panel rows: video spans 3 rows + 2 internal gaps, so subtract gaps first
-  --panel-row-height: calc((var(--actual-video-height) - #{$gap} * 2) / 3);
-
-  display: grid;
-  height: calc(100vh - #{$nav-height});
-  gap: $gap;
-  overflow: hidden;
-
-  // Default: Standard Desktop
-  grid-template-columns: var(--actual-video-width) 1fr 200px 50px;
-  grid-template-rows:
-    var(--panel-row-height)
-    var(--panel-row-height)
-    var(--panel-row-height)
-    1fr;
-  grid-template-areas:
-    'video  upper-middle-1  upper-right-1  gutter'
-    'video  upper-middle-2  upper-right-2  gutter'
-    'video  upper-middle-3  upper-right-2  gutter'
-    'bottom bottom          bottom         bottom';
-}
-
-// =============================================================================
-// Grid Area Assignments
+// Video Section
 // =============================================================================
 
 .video {
-  grid-area: video;
-}
-.upper-middle-1 {
-  grid-area: upper-middle-1;
-}
-.upper-middle-2 {
-  grid-area: upper-middle-2;
-}
-.upper-middle-3 {
-  grid-area: upper-middle-3;
-}
-.upper-right-1 {
-  grid-area: upper-right-1;
-}
-.upper-right-2 {
-  grid-area: upper-right-2;
-}
-
-.gutter {
-  grid-area: gutter;
-}
-
-.grid-bottom {
-  grid-area: bottom;
-}
-
-// =============================================================================
-// Panel Sections
-// =============================================================================
-
-.panel {
-  background: #333;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: #1a1a1a;
+  border: 2px solid #4da3ff;
+  position: relative;
   overflow: hidden;
   min-height: 0;
-  padding: 8px;
-}
+  box-sizing: border-box;
+  aspect-ratio: 16 / 9;
 
-.upper-middle-1,
-.upper-middle-2,
-.upper-middle-3 {
-  border-color: green;
-}
-
-.upper-right-1,
-.upper-right-2,
-.upper-right-3 {
-  border-color: purple;
-}
-
-.gutter {
-  border-color: cyan;
-}
-
-// =============================================================================
-// Grid Bottom
-// =============================================================================
-
-.grid-bottom {
-  background: #2a2a2a;
-  border: 1px solid red;
-  overflow: auto;
-  min-height: 0;
-
-  // Container queries: adapt internal layout to available space
-  container-type: size;
-  container-name: playgrid;
-}
-
-// =============================================================================
-// Ultrawide Layout
-// Video left (full height), panels + grid-bottom stacked on the right
-// =============================================================================
-
-@media (min-aspect-ratio: 2/1) and (min-width: 1200px) {
-  .page {
-    // In ultrawide, video takes full page height
-    --actual-video-height: calc(100vh - #{$nav-height});
-    --actual-video-width: calc(var(--actual-video-height) * 16 / 9);
-    --panel-row-height: calc((100vh - #{$nav-height}) / 4);
-
-    grid-template-rows:
-      var(--panel-row-height)
-      var(--panel-row-height)
-      var(--panel-row-height)
-      1fr;
-    grid-template-areas:
-      'video  upper-middle-1  upper-right-1'
-      'video .upper-middle-2  upper-right-2'
-      'video upper-middle-3  upper-right-3'
-      'video  bottom bottom';
-  }
-
-  .video {
-    // Span full height, let aspect-ratio handle width
-    align-self: stretch;
-    height: 100%;
-    max-height: none;
-  }
-}
-
-// =============================================================================
-// Mobile Portrait
-// Video on top, grid below, panels hidden
-// =============================================================================
-
-@media (max-width: 768px) and (orientation: portrait) {
-  .page {
-    grid-template-columns: 1fr;
-    grid-template-rows: min(calc(100vw * 9 / 16), 40vh) 1fr;
-    grid-template-areas:
-      'video'
-      'bottom';
-  }
-
-  .video {
+  video {
     width: 100%;
-  }
-
-  .panel {
-    display: none;
+    object-fit: contain;
   }
 }
 
 // =============================================================================
-// Mobile Landscape
-// Video fullscreen, everything else hidden
+// Resizer Handle
 // =============================================================================
 
-@media (max-height: 480px) and (orientation: landscape) {
-  .page {
-    height: 100vh;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-    grid-template-areas: 'video';
-  }
+.video {
+  position: relative;
+  display: flex;
 
-  .video {
-    width: 100%;
-    height: 100%;
-    max-height: none;
-    aspect-ratio: auto;
-    align-self: stretch;
-  }
-
-  .panel,
-  .grid-bottom {
-    display: none;
-  }
-
-  .resizer {
-    display: none;
+  video {
+    max-width: 100%;
   }
 }
 
-// =============================================================================
-// Container Queries — Grid Bottom adapts to its actual size
-// =============================================================================
+.resizer {
+  width: 4px; // Increased slightly for better visibility
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: col-resize;
+  z-index: 10;
+  background: transparent;
+  transition: background 0.2s;
 
-@container playgrid (max-height: 300px) {
-  // Compact mode for limited vertical space
+  // Crucial: Allows the circular button to be wider than the 4px bar
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+
+  &:hover {
+    background: #4da3ff;
+
+    .resizer-handle-btn {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .resizer-handle-btn {
+    opacity: 0; // Hidden by default
+    transform: scale(0.5); // Small animation effect
+    transition: all 0.2s ease-in-out;
+
+    position: absolute;
+    z-index: 20;
+    flex-shrink: 0; // Prevents the button from shrinking to fit the 4px width
+
+    // Ensure the button doesn't block the "mousedown" for resizing
+    pointer-events: none;
+
+    // Customizing the Material Fab to be a small circle
+    width: 32px !important;
+    height: 32px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+  }
 }
 
-@container playgrid (max-width: 500px) {
-  // Narrow mode for limited horizontal space
+.resizer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -5px; // Extends hit area 5px to the left
+  right: -5px; // Extends hit area 5px to the right
+  bottom: 0;
+  background: transparent;
 }

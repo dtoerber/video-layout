@@ -4,7 +4,7 @@ import { computed, Injectable, signal } from '@angular/core';
   providedIn: 'root',
 })
 export class ResizeService {
-  readonly videoWidth = signal<number>(640);
+  readonly videoWidth = signal<number>(960);
   readonly videoHeight = computed(() => (this.videoWidth() * 9) / 16);
 
   updateWidth(newWidth: number): void {

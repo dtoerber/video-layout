@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-layout-one',
   imports: [MatButtonModule, MatIconModule],
   templateUrl: './layout-one.html',
-  styleUrls: ['./layout-one.scss', './extra.scss'],
+  styleUrls: ['./layout-one.scss', './grid.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LayoutOne {
