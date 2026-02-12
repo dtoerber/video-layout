@@ -175,11 +175,11 @@
   .page {
     --actual-video-width: min(var(--video-width, 640px), calc((100vh - #{bp.$nav-height}) * 16 / 9));
 
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 45px 45px auto minmax(#{bp.$min-grid-height}, 1fr);
     grid-template-areas:
       'video  upper-middle-1  upper-right-1 gutter'
       'video  upper-middle-2  upper-right-2 gutter'
-      'video  upper-middle-3  upper-right-2 gutter'
+      'video  upper-middle-3  upper-right-3 gutter'
       'video  bottom          bottom        bottom';
   }
 
