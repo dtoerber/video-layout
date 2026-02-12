@@ -78,6 +78,23 @@
   }
 }
 
+// =============================================================================
+// Ultrawide: video section fills full height, video element stays 16:9
+// =============================================================================
+
+@media (min-aspect-ratio: 2/1) and (min-width: 1200px) {
+  .video {
+    aspect-ratio: auto;
+    align-items: center;
+    justify-content: center;
+
+    video {
+      max-height: 100%;
+      aspect-ratio: 16 / 9;
+    }
+  }
+}
+
 .resizer::after {
   content: '';
   position: absolute;

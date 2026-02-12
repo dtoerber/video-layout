@@ -24,7 +24,8 @@ $gap: 0px;
   overflow: hidden;
 
   // Default: Standard Desktop
-  grid-template-columns: var(--actual-video-width) 1fr 200px 50px;
+  grid-template-columns: clamp(500px, 65vw, var(--actual-video-width)) minmax(200px, 1fr) 200px 50px;
+  // grid-template-columns: var(--actual-video-width) minmax(200px, 1fr) 200px 50px;
   grid-template-rows: auto auto auto minmax(#{$min-grid-height}, 1fr);
   grid-template-areas:
     'video  upper-middle-1  upper-right-1  gutter'
@@ -114,7 +115,7 @@ $gap: 0px;
 
 @media (min-aspect-ratio: 2/1) and (min-width: 1200px) {
   .page {
-    --actual-video-width: calc((100vh - #{$nav-height}) * 16 / 9);
+    --actual-video-width: min(var(--video-width, 640px), calc((100vh - #{$nav-height}) * 16 / 9));
 
     grid-template-rows: 1fr 1fr 1fr 1fr;
     grid-template-areas:
