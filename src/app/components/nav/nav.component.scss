@@ -1,3 +1,5 @@
+@use 'breakpoints' as bp;
+
 .sidenav-container {
   height: 100vh;
 }
@@ -14,11 +16,11 @@
   position: sticky;
   top: 0;
   z-index: 1;
-  height: 38px;
-  min-height: 38px;
+  height: bp.$nav-height;
+  min-height: bp.$nav-height;
 }
 
-@media (max-height: 480px) and (orientation: landscape) {
+@include bp.mobile-landscape {
   .mat-toolbar.mat-primary {
     display: none;
   }

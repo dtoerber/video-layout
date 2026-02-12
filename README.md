@@ -1,6 +1,6 @@
 # Adaptive Video Player Layout
 
-A CSS-first adaptive layout prototype for a video player page. Designed to handle all screen sizes from mobile to ultrawide with a single set of CSS custom properties — no JavaScript layout detection needed.
+A CSS-first adaptive layout prototype for a video player page. Uses a **mobile-first** approach with shared SCSS breakpoint mixins to handle all screen sizes from mobile to ultrawide — no JavaScript layout detection needed.
 
 ## Development Server
 
@@ -12,6 +12,16 @@ Open `http://localhost:4200/` in your browser.
 
 ## Architecture
 
+### Mobile-First Breakpoint System
+
+Shared breakpoint mixins live in `src/styles/_breakpoints.scss` and are available to all components via `@use 'breakpoints' as bp`. The cascade order is:
+
+1. **Base** — Mobile portrait (no media query)
+2. **Tablet** — `min-width: 769px`
+3. **Desktop** — `min-width: 1200px`
+4. **Ultrawide** — `min-aspect-ratio: 2/1` + `min-width: 1200px`
+5. **Mobile landscape** — `max-height: 480px` + `orientation: landscape` (last, so it overrides all width-based breakpoints)
+
 ### CSS Custom Property Chain
 
 All layout dimensions derive from a single input: `--video-width` (set via Angular signal binding). CSS computes a single derived property:
@@ -20,15 +30,17 @@ All layout dimensions derive from a single input: `--video-width` (set via Angul
 --video-width (input from ResizeService signal)
   → --actual-video-width = min(
       video-width,
-      100vw - 200px,
+      100% - 600px,
       (100vh - nav-height - min-grid-height) * 16/9
     )
 ```
 
+Width calculations use `100%` (container width), not `100vw`, because the grid lives inside `mat-sidenav-content` — not the full viewport. This correctly accounts for the 200px sidenav.
+
 The video element uses `aspect-ratio: 16 / 9` to derive its height from the width. The `min()` function guarantees:
 
 - Video never exceeds the user-requested width
-- Video leaves at least 200px for panels horizontally (`100vw - 200px`)
+- Video leaves at least 600px for panels + gutter horizontally (`100% - 600px`)
 - Video height never pushes grid-bottom below its minimum (`$min-grid-height`)
 - No JavaScript layout detection or per-device breakpoints needed
 
@@ -49,52 +61,13 @@ The page uses a flat CSS Grid with 8 direct children:
 ```
 
 - `upper-right-2` spans rows 2–3
-- `gutter` is a narrow 50px column spanning all 3 panel rows (contains a close icon)
+- `gutter` is a narrow 40px column spanning all 3 panel rows (contains a close icon)
 
 Grid areas are reassigned via `grid-template-areas` in each media query — the HTML never changes.
 
 ## Layout Modes
 
-### 1. Standard Desktop (default)
-
-**No media query — this is the base layout.**
-
-- 4-column grid: video | upper-middle panels (fluid) | upper-right panels (200px) | gutter (50px)
-- Video spans 3 rows on the left, sized by `--actual-video-width` with `aspect-ratio: 16/9`
-- 4th row (`minmax($min-grid-height, 1fr)`) is grid-bottom spanning full width
-- Video width is user-resizable via drag handle
-- Height is constrained so grid-bottom always has at least 200px
-
-```
-Columns: [actual-video-width] [1fr] [200px] [50px]
-Rows:    [auto] [auto] [auto] [minmax(200px, 1fr)]
-```
-
-### 2. Ultrawide
-
-**Media query:** `(min-aspect-ratio: 2/1) and (min-width: 1200px)`
-
-- Video takes full page height (`--actual-video-width` = `(100vh - nav) * 16/9`)
-- Grid-bottom moves beside the video in the 4th row instead of below it
-- Panels stack in 3 rows to the right of the video
-- Grid-bottom shares the bottom row with the video
-- Gutter column is not used in this layout
-
-```
-┌────────────────┬──────────────────┬─────────────────┐
-│                │ upper-middle-1   │ upper-right-1   │
-│                ├──────────────────┼─────────────────┤
-│     video      │ upper-middle-2   │ upper-right-2   │
-│                ├──────────────────┼─────────────────┤
-│                │ upper-middle-3   │ upper-right-3   │
-│                ├──────────────────┴─────────────────┤
-│                │          grid-bottom               │
-└────────────────┴────────────────────────────────────┘
-```
-
-### 3. Mobile Portrait
-
-**Media query:** `(max-width: 768px) and (orientation: portrait)`
+### 1. Mobile Portrait (base — no media query)
 
 - Single column layout
 - Video on top at full width, height derived from `aspect-ratio: 16/9`
@@ -111,7 +84,7 @@ Rows:    [auto] [auto] [auto] [minmax(200px, 1fr)]
 └──────────────────┘
 ```
 
-### 4. Mobile Landscape
+### 2. Mobile Landscape
 
 **Media query:** `(max-height: 480px) and (orientation: landscape)`
 
@@ -128,23 +101,83 @@ Rows:    [auto] [auto] [auto] [minmax(200px, 1fr)]
 └──────────────────────────┘
 ```
 
+### 3. Tablet
+
+**Media query:** `(min-width: 769px)`
+
+- Video spans full width at top
+- 6 panels shown in a 3-column grid below the video
+- Grid-bottom at the bottom spanning full width
+- Gutter and resizer hidden
+
+```
+┌───────────────┬───────────────┬───────────────┐
+│               video (spans 3)                 │
+├───────────────┼───────────────┼───────────────┤
+│ upper-middle-1│ upper-middle-2│ upper-middle-3│
+├───────────────┼───────────────┼───────────────┤
+│ upper-right-1 │ upper-right-2 │ upper-right-3 │
+├───────────────┴───────────────┴───────────────┤
+│              grid-bottom                      │
+└───────────────────────────────────────────────┘
+Columns: 1fr 1fr 1fr
+Rows: auto auto auto minmax(200px, 1fr)
+```
+
+### 4. Desktop
+
+**Media query:** `(min-width: 1200px)`
+
+- 4-column grid: video | upper-middle panels (fluid) | upper-right panels (200px) | gutter (40px)
+- Video spans 3 rows on the left, sized by `--actual-video-width` with `aspect-ratio: 16/9`
+- 4th row (`minmax($min-grid-height, 1fr)`) is grid-bottom spanning full width
+- Video width is user-resizable via drag handle
+- Height is constrained so grid-bottom always has at least 200px
+
+```
+Columns: [actual-video-width] [1fr] [200px] [40px]
+Rows:    [auto] [auto] [auto] [minmax(200px, 1fr)]
+```
+
+### 5. Ultrawide
+
+**Media query:** `(min-aspect-ratio: 2/1) and (min-width: 1200px)`
+
+- Video takes full page height (`--actual-video-width` = `(100vh - nav) * 16/9`)
+- Grid-bottom moves beside the video in the 4th row instead of below it
+- Panels stack in 3 rows to the right of the video
+- Grid-bottom shares the bottom row with the video
+
+```
+┌────────────────┬──────────────────┬─────────────────┐
+│                │ upper-middle-1   │ upper-right-1   │
+│                ├──────────────────┼─────────────────┤
+│     video      │ upper-middle-2   │ upper-right-2   │
+│                ├──────────────────┼─────────────────┤
+│                │ upper-middle-3   │ upper-right-3   │
+│                ├──────────────────┴─────────────────┤
+│                │          grid-bottom               │
+└────────────────┴────────────────────────────────────┘
+```
+
 ## Files
 
-| File                                            | Purpose                                                                                   |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `src/app/components/layout-one/grid.scss`       | Grid definitions, CSS custom properties, all 4 layout modes, container query placeholders |
-| `src/app/components/layout-one/layout-one.scss` | Video section styling, resizer handle                                                     |
-| `src/app/components/layout-one/layout-one.html` | Flat grid structure with 8 children, `--video-width` binding                              |
-| `src/app/components/layout-one/layout-one.ts`   | Resize drag handling via Renderer2, injects ResizeService                                 |
-| `src/app/services/resize.service.ts`            | `videoWidth` signal (input), `videoHeight` computed signal                                |
-| `src/app/components/nav/nav.component.scss`     | Toolbar hidden in mobile landscape                                                        |
+| File                                            | Purpose                                                                              |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `src/styles/_breakpoints.scss`                  | Shared breakpoint mixins and layout constants                                        |
+| `src/app/components/layout-one/grid.scss`       | Grid definitions, CSS custom properties, all 5 layout modes (mobile-first)           |
+| `src/app/components/layout-one/layout-one.scss` | Video section styling, resizer handle                                                |
+| `src/app/components/layout-one/layout-one.html` | Flat grid structure with 8 children, `--video-width` binding                         |
+| `src/app/components/layout-one/layout-one.ts`   | Resize drag handling via Renderer2, injects ResizeService                            |
+| `src/app/services/resize.service.ts`            | `videoWidth` signal (input), `videoHeight` computed signal                           |
+| `src/app/components/nav/nav.component.scss`     | Toolbar hidden in mobile landscape (uses shared mixin)                               |
 
 ## Video Resize
 
 The video section has a drag handle on its right edge. Dragging updates `ResizeService.videoWidth`, which flows into the `--video-width` CSS custom property. `--actual-video-width` recalculates automatically via `min()` — no JavaScript dimension logic needed.
 
 - Minimum width: 200px (enforced in ResizeService)
-- Maximum width: constrained by `min()` to `100vw - 200px`, ensuring panels remain visible
+- Maximum width: constrained by `min()` to `100% - 600px` (container-relative, accounts for sidenav)
 - Maximum height: constrained by `min()` to `(100vh - nav - min-grid-height) * 16/9`, ensuring grid-bottom has space
 
 ## Video Element
@@ -153,12 +186,7 @@ The video section contains an HTML5 `<video>` element with `object-fit: contain`
 
 ## Container Queries
 
-The grid-bottom section is configured as a container query context (`container-type: size`, `container-name: playgrid`). Breakpoint placeholders exist for:
-
-- `max-height: 300px` — compact mode for limited vertical space
-- `max-width: 500px` — narrow mode for limited horizontal space
-
-These are ready to be populated with content adaptation rules (compact rows, hidden controls, etc.) when real content is added.
+The grid-bottom section is configured as a container query context (`container-type: size`, `container-name: playgrid`). These are ready to be populated with content adaptation rules (compact rows, hidden controls, etc.) when real content is added.
 
 ## Testing in DevTools
 
@@ -166,17 +194,19 @@ All layout modes use CSS media queries on **viewport dimensions**, not `screen.w
 
 | Layout           | DevTools Dimensions                                        |
 | ---------------- | ---------------------------------------------------------- |
-| Standard Desktop | 1920 x 1080                                                |
-| Ultrawide        | 2560 x 1080 (or any width:height > 2:1 and width > 1200px) |
-| Mobile Portrait  | 375 x 812 (or any width < 768px, portrait)                 |
-| Mobile Landscape | 812 x 375 (or any height < 480px, landscape)               |
+| Mobile Portrait  | 375 x 812 (or any width < 769px, portrait)                |
+| Mobile Landscape | 812 x 375 (or any height < 480px, landscape)              |
+| Tablet           | 820 x 1180 (or any width 769–1199px)                      |
+| Desktop          | 1920 x 1080                                               |
+| Ultrawide        | 2560 x 1080 (or any width:height > 2:1 and width > 1200px)|
+| Edge: 1024 x 450 | Mobile landscape wins (fullscreen video)                  |
 
 ## Configuration
 
-SCSS variables at the top of `grid.scss`:
+SCSS variables in `src/styles/_breakpoints.scss`:
 
 | Variable           | Default | Purpose                                   |
 | ------------------ | ------- | ----------------------------------------- |
-| `$nav-height`      | `64px`  | Height of the navigation toolbar          |
+| `$nav-height`      | `38px`  | Height of the navigation toolbar          |
 | `$min-grid-height` | `200px` | Minimum guaranteed height for grid-bottom |
 | `$gap`             | `0px`   | Gap between grid cells                    |

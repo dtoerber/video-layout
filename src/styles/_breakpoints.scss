@@ -1,0 +1,43 @@
+// =============================================================================
+// Layout Constants
+// =============================================================================
+
+$nav-height: 38px !default;
+$min-grid-height: 200px !default;
+$gap: 0px !default;
+
+// =============================================================================
+// Breakpoint Values
+// =============================================================================
+
+$tablet-min-width: 769px;
+$desktop-min-width: 1200px;
+$landscape-max-height: 480px;
+
+// =============================================================================
+// Breakpoint Mixins — mobile-first width progression + landscape override
+// =============================================================================
+
+@mixin mobile-landscape {
+  @media (max-height: $landscape-max-height) and (orientation: landscape) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: $tablet-min-width) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: $desktop-min-width) {
+    @content;
+  }
+}
+
+@mixin ultrawide {
+  @media (min-aspect-ratio: 2/1) and (min-width: $desktop-min-width) {
+    @content;
+  }
+}

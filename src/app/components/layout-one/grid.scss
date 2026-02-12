@@ -1,37 +1,4 @@
-// =============================================================================
-// Layout Configuration
-// =============================================================================
-
-$nav-height: 38px;
-$min-grid-height: 200px;
-$gap: 0px;
-
-// =============================================================================
-// Page Container — CSS custom property calculations
-// =============================================================================
-
-.page {
-  // Width-only constraints — aspect-ratio on .video handles 16:9
-  --actual-video-width: min(
-    var(--video-width, 640px),
-    calc(100vw - 200px),
-    calc((100vh - #{$nav-height} - #{$min-grid-height}) * 16 / 9)
-  );
-
-  display: grid;
-  height: calc(100vh - #{$nav-height});
-  gap: $gap;
-  overflow: hidden;
-
-  // Default: Standard Desktop
-  grid-template-columns: clamp(500px, 70vw, var(--actual-video-width)) minmax(360px, 1fr) 200px 40px;
-  grid-template-rows: 45px 45px auto minmax(#{$min-grid-height}, 1fr);
-  grid-template-areas:
-    'video  upper-middle-1  upper-right-1  gutter'
-    'video  upper-middle-2  upper-right-2  gutter'
-    'video  upper-middle-3  upper-right-3  gutter'
-    'bottom bottom          bottom         bottom';
-}
+@use 'breakpoints' as bp;
 
 // =============================================================================
 // Grid Area Assignments
@@ -55,15 +22,12 @@ $gap: 0px;
 .upper-right-2 {
   grid-area: upper-right-2;
 }
-
 .upper-right-3 {
   grid-area: upper-right-3;
 }
-
 .gutter {
   grid-area: gutter;
 }
-
 .grid-bottom {
   grid-area: bottom;
 }
@@ -105,20 +69,111 @@ $gap: 0px;
   border: 1px solid red;
   overflow: auto;
   min-height: 0;
-
-  // Container queries: adapt internal layout to available space
   container-type: size;
   container-name: playgrid;
 }
 
 // =============================================================================
-// Ultrawide Layout
-// Video left (full height), panels + grid-bottom stacked on the right
+// 1. Base — Mobile Portrait (single column, panels hidden)
 // =============================================================================
 
-@media (min-aspect-ratio: 2/1) and (min-width: 1200px) {
+.page {
+  display: grid;
+  height: calc(100vh - #{bp.$nav-height});
+  gap: bp.$gap;
+  overflow: hidden;
+
+  grid-template-columns: 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    'video'
+    'bottom';
+}
+
+.video {
+  width: 100%;
+}
+
+.panel {
+  display: none;
+}
+
+// =============================================================================
+// 2. Tablet (min-width: 769px)
+// Video full-width top, 6 panels in 3-col grid, grid-bottom bottom
+// =============================================================================
+
+@include bp.tablet {
   .page {
-    --actual-video-width: min(var(--video-width, 640px), calc((100vh - #{$nav-height}) * 16 / 9));
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto minmax(#{bp.$min-grid-height}, 1fr);
+    grid-template-areas:
+      'video           video           video'
+      'upper-middle-1  upper-middle-2  upper-middle-3'
+      'upper-right-1   upper-right-2   upper-right-3'
+      'bottom          bottom          bottom';
+  }
+
+  .video {
+    width: 100%;
+  }
+
+  .panel {
+    display: block;
+  }
+
+  .gutter,
+  .resizer {
+    display: none;
+  }
+}
+
+// =============================================================================
+// 3. Desktop (min-width: 1200px)
+// 4-column layout, all panels visible, resizer visible
+// =============================================================================
+
+@include bp.desktop {
+  .page {
+    // 100% = container width (not viewport — accounts for sidenav)
+    // 600px = minmax(360px) + 200px + 40px (minimum width of columns 2–4)
+    --actual-video-width: min(
+      var(--video-width, 640px),
+      calc(100% - 600px),
+      calc((100vh - #{bp.$nav-height} - #{bp.$min-grid-height}) * 16 / 9)
+    );
+
+    grid-template-columns: var(--actual-video-width) minmax(360px, 1fr) 200px 40px;
+    grid-template-rows: 45px 45px auto minmax(#{bp.$min-grid-height}, 1fr);
+    grid-template-areas:
+      'video  upper-middle-1  upper-right-1  gutter'
+      'video  upper-middle-2  upper-right-2  gutter'
+      'video  upper-middle-3  upper-right-3  gutter'
+      'bottom bottom          bottom         bottom';
+  }
+
+  .video {
+    width: auto;
+  }
+
+  .panel {
+    display: block;
+  }
+
+  .gutter,
+  .resizer {
+    display: flex;
+  }
+}
+
+// =============================================================================
+// 4. Ultrawide (min-aspect-ratio: 2/1 + min-width: 1200px)
+// Video full height, grid-bottom beside video
+// =============================================================================
+
+@include bp.ultrawide {
+  .page {
+    --actual-video-width: min(var(--video-width, 640px), calc((100vh - #{bp.$nav-height}) * 16 / 9));
 
     grid-template-rows: 1fr 1fr 1fr 1fr;
     grid-template-areas:
@@ -127,37 +182,25 @@ $gap: 0px;
       'video  upper-middle-3  upper-right-2 gutter'
       'video  bottom          bottom        bottom';
   }
-}
-
-// =============================================================================
-// Mobile Portrait
-// Video on top, grid below, panels hidden
-// =============================================================================
-
-@media (max-width: 768px) and (orientation: portrait) {
-  .page {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
-    grid-template-areas:
-      'video'
-      'bottom';
-  }
 
   .video {
-    width: 100%;
-  }
+    aspect-ratio: auto;
+    align-items: center;
+    justify-content: center;
 
-  .panel {
-    display: none;
+    video {
+      max-height: 100%;
+      aspect-ratio: 16 / 9;
+    }
   }
 }
 
 // =============================================================================
-// Mobile Landscape
-// Video fullscreen, everything else hidden
+// 5. Mobile Landscape (max-height: 480px + landscape)
+// LAST so it overrides everything — video fullscreen, all else hidden
 // =============================================================================
 
-@media (max-height: 480px) and (orientation: landscape) {
+@include bp.mobile-landscape {
   .page {
     height: 100vh;
     grid-template-columns: 1fr;
@@ -172,23 +215,8 @@ $gap: 0px;
   }
 
   .panel,
-  .grid-bottom {
-    display: none;
-  }
-
+  .grid-bottom,
   .resizer {
     display: none;
   }
-}
-
-// =============================================================================
-// Container Queries — Grid Bottom adapts to its actual size
-// =============================================================================
-
-@container playgrid (max-height: 300px) {
-  // Compact mode for limited vertical space
-}
-
-@container playgrid (max-width: 500px) {
-  // Narrow mode for limited horizontal space
 }
