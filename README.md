@@ -46,22 +46,21 @@ The video element uses `aspect-ratio: 16 / 9` to derive its height from the widt
 
 ### Grid Structure
 
-The page uses a flat CSS Grid with 8 direct children:
+The page uses a flat CSS Grid with 9 direct children:
 
 ```
 ┌────────────────┬──────────────────┬─────────────────┬────────┐
 │                │ upper-middle-1   │ upper-right-1   │        │
 │                ├──────────────────┼─────────────────┤        │
 │     video      │ upper-middle-2   │ upper-right-2   │ gutter │
-│                ├──────────────────┤                 │        │
-│                │ upper-middle-3   │                 │        │
+│                ├──────────────────┼─────────────────┤        │
+│                │ upper-middle-3   │ upper-right-3   │        │
 ├────────────────┴──────────────────┴─────────────────┴────────┤
 │                         grid-bottom                          │
 └──────────────────────────────────────────────────────────────┘
 ```
 
-- `upper-right-2` spans rows 2–3
-- `gutter` is a narrow 40px column spanning all 3 panel rows (contains a close icon)
+- `gutter` is a narrow 40px column spanning all 3 panel rows (contains close and settings icons)
 
 Grid areas are reassigned via `grid-template-areas` in each media query — the HTML never changes.
 
@@ -128,15 +127,15 @@ Rows: auto auto auto minmax(200px, 1fr)
 
 **Media query:** `(min-width: 1200px)`
 
-- 4-column grid: video | upper-middle panels (fluid) | upper-right panels (200px) | gutter (40px)
+- 4-column grid: video | upper-middle panels (minmax 360px–1fr) | upper-right panels (200px) | gutter (40px)
 - Video spans 3 rows on the left, sized by `--actual-video-width` with `aspect-ratio: 16/9`
 - 4th row (`minmax($min-grid-height, 1fr)`) is grid-bottom spanning full width
 - Video width is user-resizable via drag handle
 - Height is constrained so grid-bottom always has at least 200px
 
 ```
-Columns: [actual-video-width] [1fr] [200px] [40px]
-Rows:    [auto] [auto] [auto] [minmax(200px, 1fr)]
+Columns: [actual-video-width] [minmax(360px, 1fr)] [200px] [40px]
+Rows:    [45px] [45px] [auto] [minmax(200px, 1fr)]
 ```
 
 ### 5. Ultrawide
@@ -149,15 +148,15 @@ Rows:    [auto] [auto] [auto] [minmax(200px, 1fr)]
 - Grid-bottom shares the bottom row with the video
 
 ```
-┌────────────────┬──────────────────┬─────────────────┐
-│                │ upper-middle-1   │ upper-right-1   │
-│                ├──────────────────┼─────────────────┤
-│     video      │ upper-middle-2   │ upper-right-2   │
-│                ├──────────────────┼─────────────────┤
-│                │ upper-middle-3   │ upper-right-3   │
-│                ├──────────────────┴─────────────────┤
-│                │          grid-bottom               │
-└────────────────┴────────────────────────────────────┘
+┌────────────────┬──────────────────┬─────────────────┬────────┐
+│                │ upper-middle-1   │ upper-right-1   │        │
+│                ├──────────────────┼─────────────────┤        │
+│     video      │ upper-middle-2   │ upper-right-2   │ gutter │
+│                ├──────────────────┼─────────────────┤        │
+│                │ upper-middle-3   │ upper-right-3   │        │
+│                ├──────────────────┴─────────────────┴────────┤
+│                │          grid-bottom                        │
+└────────────────┴─────────────────────────────────────────────┘
 ```
 
 ## Files
@@ -167,7 +166,7 @@ Rows:    [auto] [auto] [auto] [minmax(200px, 1fr)]
 | `src/styles/_breakpoints.scss`                  | Shared breakpoint mixins and layout constants                                        |
 | `src/app/components/layout-one/grid.scss`       | Grid definitions, CSS custom properties, all 5 layout modes (mobile-first)           |
 | `src/app/components/layout-one/layout-one.scss` | Video section styling, resizer handle                                                |
-| `src/app/components/layout-one/layout-one.html` | Flat grid structure with 8 children, `--video-width` binding                         |
+| `src/app/components/layout-one/layout-one.html` | Flat grid structure with 9 children, `--video-width` binding                         |
 | `src/app/components/layout-one/layout-one.ts`   | Resize drag handling via Renderer2, injects ResizeService                            |
 | `src/app/services/resize.service.ts`            | `videoWidth` signal (input), `videoHeight` computed signal                           |
 | `src/app/components/nav/nav.component.scss`     | Toolbar hidden in mobile landscape (uses shared mixin)                               |
@@ -182,7 +181,7 @@ The video section has a drag handle on its right edge. Dragging updates `ResizeS
 
 ## Video Element
 
-The video section contains an HTML5 `<video>` element with `object-fit: contain`, ensuring the video scales within its grid cell without cropping while maintaining its native aspect ratio.
+The video section contains an `<img>` placeholder with `object-fit: contain`, ensuring the content scales within its grid cell without cropping while maintaining its native aspect ratio.
 
 ## Container Queries
 
