@@ -1,0 +1,35 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # This triggers the action whenever you push to 'main'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use the Node version your app requires
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        # This builds the app and sets the correct base-href for video-layout
+        run: npx ng build --configuration production --base-href /video-layout/
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist/video-layout/browser # Check your 'dist' folder structure; for Angular 17+ it's usually this.
+          branch: gh-pages # The branch the action will push the build to
