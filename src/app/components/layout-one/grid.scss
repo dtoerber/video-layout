@@ -173,7 +173,11 @@
 
 @include bp.ultrawide {
   .page {
-    --actual-video-width: min(var(--video-width, 640px), calc((100vh - #{bp.$nav-height}) * 16 / 9));
+    --actual-video-width: min(
+      var(--video-width, 640px),
+      calc(100% - 600px),
+      calc((100vh - #{bp.$nav-height}) * 16 / 9)
+    );
 
     grid-template-rows: 45px 45px auto minmax(#{bp.$min-grid-height}, 1fr);
     grid-template-areas:
