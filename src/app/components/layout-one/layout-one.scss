@@ -104,3 +104,9 @@
   bottom: 0;
   background: transparent;
 }
+
+.gutter {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

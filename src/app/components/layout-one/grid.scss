@@ -2,7 +2,7 @@
 // Layout Configuration
 // =============================================================================
 
-$nav-height: 64px;
+$nav-height: 38px;
 $min-grid-height: 200px;
 $gap: 0px;
 
@@ -24,13 +24,14 @@ $gap: 0px;
   overflow: hidden;
 
   // Default: Standard Desktop
-  grid-template-columns: clamp(500px, 65vw, var(--actual-video-width)) minmax(200px, 1fr) 200px 50px;
+  grid-template-columns: clamp(500px, 65vw, var(--actual-video-width)) minmax(200px, 1fr) 200px 40px;
   // grid-template-columns: var(--actual-video-width) minmax(200px, 1fr) 200px 50px;
-  grid-template-rows: auto auto auto minmax(#{$min-grid-height}, 1fr);
+  grid-template-rows: 45px 45px auto minmax(#{$min-grid-height}, 1fr);
+  // grid-template-rows: minmax(45px, auto) minmax(45px, auto) auto 1fr;
   grid-template-areas:
     'video  upper-middle-1  upper-right-1  gutter'
     'video  upper-middle-2  upper-right-2  gutter'
-    'video  upper-middle-3  upper-right-2  gutter'
+    'video  upper-middle-3  upper-right-3  gutter'
     'bottom bottom          bottom         bottom';
 }
 
@@ -55,6 +56,10 @@ $gap: 0px;
 }
 .upper-right-2 {
   grid-area: upper-right-2;
+}
+
+.upper-right-3 {
+  grid-area: upper-right-3;
 }
 
 .gutter {
