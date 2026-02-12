@@ -24,10 +24,8 @@ $gap: 0px;
   overflow: hidden;
 
   // Default: Standard Desktop
-  grid-template-columns: clamp(500px, 65vw, var(--actual-video-width)) minmax(200px, 1fr) 200px 40px;
-  // grid-template-columns: var(--actual-video-width) minmax(200px, 1fr) 200px 50px;
+  grid-template-columns: clamp(500px, 70vw, var(--actual-video-width)) minmax(360px, 1fr) 200px 40px;
   grid-template-rows: 45px 45px auto minmax(#{$min-grid-height}, 1fr);
-  // grid-template-rows: minmax(45px, auto) minmax(45px, auto) auto 1fr;
   grid-template-areas:
     'video  upper-middle-1  upper-right-1  gutter'
     'video  upper-middle-2  upper-right-2  gutter'
