@@ -10,7 +10,7 @@
     <mat-toolbar>Cutups</mat-toolbar>
     <mat-nav-list>
       <a mat-list-item routerLinkActive routerLink="layout1">Layout One</a>
-      <a mat-list-item routerLinkActive routerLink="layout3">DnD Overlay</a>
+      <!-- <a mat-list-item routerLinkActive routerLink="layout3">DnD Overlay</a> -->
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -19,7 +19,7 @@
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>Video Layout</span>
-      <span style="margin-left: auto; font-size: 12px; opacity: 0.6;">{{ dimensions() }}</span>
+      <span style="margin-left: auto; font-size: 12px; opacity: 0.6">{{ dimensions() }}</span>
     </mat-toolbar>
     <router-outlet></router-outlet>
   </mat-sidenav-content>

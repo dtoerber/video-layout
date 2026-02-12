@@ -11,7 +11,7 @@
   box-sizing: border-box;
   aspect-ratio: 16 / 9;
 
-  video {
+  img {
     width: 100%;
     object-fit: contain;
   }
@@ -25,7 +25,7 @@
   position: relative;
   display: flex;
 
-  video {
+  img {
     max-width: 100%;
   }
 }
