@@ -7,4 +7,5 @@ export const routes: Routes = [
   { path: 'layout1', component: LayoutOne },
   { path: 'layout2', component: LayoutTwo },
   { path: 'layout3', component: LayoutThree },
+  { path: '', redirectTo: 'layout1', pathMatch: 'full' },
 ];
