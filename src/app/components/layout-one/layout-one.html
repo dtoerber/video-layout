@@ -2,7 +2,13 @@
   <section class="video">
     <img src="https://placehold.co/1600x900/1a1a1a/4da3ff" alt="placeholder" />
     <div class="resizer" (mousedown)="startResizing($event)">
-      <svg class="resizer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="32" height="32">
+      <svg
+        class="resizer-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 200 200"
+        width="32"
+        height="32"
+      >
         <circle cx="100" cy="100" r="85" fill="#000000" stroke="#4da3ff" stroke-width="12" />
         <path
           d="M 85 70 L 55 100 L 85 130"
@@ -28,7 +34,14 @@
   <section class="panel upper-middle-2">Upper Middle 2</section>
   <section class="panel upper-middle-3">Upper Middle 3</section>
 
-  <section class="panel upper-right-1">Upper Right 1</section>
+  <section class="panel upper-right-1">
+    <mat-button-toggle-group hideSingleSelectionIndicator>
+      <mat-button-toggle value="S" (click)="setVideoSize('S')">S</mat-button-toggle>
+      <mat-button-toggle value="M" (click)="setVideoSize('M')">M</mat-button-toggle>
+      <mat-button-toggle value="L" (click)="setVideoSize('L')">L</mat-button-toggle>
+      <mat-button-toggle value="*" (click)="setVideoSize('*')">*</mat-button-toggle>
+    </mat-button-toggle-group>
+  </section>
   <section class="panel upper-right-2">Upper Right 2</section>
   <section class="panel upper-right-3">Upper Right 3</section>
   <section class="panel gutter"><mat-icon>close</mat-icon><mat-icon>settings</mat-icon></section>

@@ -56,6 +56,10 @@
   border-color: purple;
 }
 
+.panel.upper-right-1 {
+  justify-content: center;
+}
+
 .gutter {
   border-color: cyan;
 }
@@ -94,10 +98,6 @@
   width: 100%;
 }
 
-.panel {
-  display: none;
-}
-
 // =============================================================================
 // 2. Tablet (min-width: 769px)
 // Video full-width top, 6 panels in 3-col grid, grid-bottom bottom
@@ -122,6 +122,10 @@
     display: block;
   }
 
+  .panel.upper-right-1 {
+    display: flex;
+  }
+
   .gutter,
   .resizer {
     display: none;
@@ -144,7 +148,7 @@
     );
 
     grid-template-columns: var(--actual-video-width) minmax(360px, 1fr) 200px 40px;
-    grid-template-rows: 45px 45px auto minmax(#{bp.$min-grid-height}, 1fr);
+    grid-template-rows: 60px 60px auto minmax(#{bp.$min-grid-height}, 1fr);
     grid-template-areas:
       'video  upper-middle-1  upper-right-1  gutter'
       'video  upper-middle-2  upper-right-2  gutter'
@@ -179,7 +183,7 @@
       calc((100vh - #{bp.$nav-height}) * 16 / 9)
     );
 
-    grid-template-rows: 45px 45px auto minmax(#{bp.$min-grid-height}, 1fr);
+    grid-template-rows: 60px 60px auto minmax(#{bp.$min-grid-height}, 1fr);
     grid-template-areas:
       'video  upper-middle-1  upper-right-1 gutter'
       'video  upper-middle-2  upper-right-2 gutter'
@@ -219,6 +223,7 @@
   }
 
   .panel,
+  .panel.upper-right-1,
   .grid-bottom,
   .resizer {
     display: none;

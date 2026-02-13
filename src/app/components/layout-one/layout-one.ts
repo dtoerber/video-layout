@@ -2,10 +2,11 @@ import { ChangeDetectionStrategy, Component, inject, Renderer2 } from '@angular/
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { ResizeService } from './resize.service';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'app-layout-one',
-  imports: [MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, MatIconModule, MatButtonToggleModule],
   templateUrl: './layout-one.html',
   styleUrls: ['./layout-one.scss', './grid.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +33,10 @@ export class LayoutOne {
     this.mouseUpListener = this.renderer.listen('document', 'mouseup', () => {
       this.stopResizing();
     });
+  }
+
+  setVideoSize(x: any) {
+    console.log(`in setVideoSize`, x);
   }
 
   private stopResizing(): void {
