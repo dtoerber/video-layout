@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, Renderer2 } from '@angular/core';
-import { ResizeService } from '../../services/resize.service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { ResizeService } from './resize.service';
 
 @Component({
   selector: 'app-layout-one',
