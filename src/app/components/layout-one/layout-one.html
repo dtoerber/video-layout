@@ -1,5 +1,5 @@
 <div class="page" [style.--video-width.px]="resizeService.videoWidth()">
-  <section class="video">
+  <section class="video" #videoSection>
     <img src="https://placehold.co/1600x900/1a1a1a/4da3ff" alt="placeholder" />
     <div class="resizer" (mousedown)="startResizing($event)">
       <svg
@@ -28,6 +28,7 @@
         />
       </svg>
     </div>
+    <span class="video-size">{{ renderedWidth() | number:'1.0-0' }} x {{ renderedHeight() | number:'1.0-0' }}</span>
   </section>
 
   <section class="panel upper-middle-1">Upper Middle 1</section>
