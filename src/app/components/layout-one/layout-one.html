@@ -1,7 +1,27 @@
 <div class="page" [style.--video-width.px]="resizeService.videoWidth()">
   <section class="video">
     <img src="https://placehold.co/1600x900/1a1a1a/4da3ff" alt="placeholder" />
-    <div class="resizer" (mousedown)="startResizing($event)"></div>
+    <div class="resizer" (mousedown)="startResizing($event)">
+      <svg class="resizer-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="32" height="32">
+        <circle cx="100" cy="100" r="85" fill="#000000" stroke="#4da3ff" stroke-width="12" />
+        <path
+          d="M 85 70 L 55 100 L 85 130"
+          fill="none"
+          stroke="#4da3ff"
+          stroke-width="12"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <path
+          d="M 115 70 L 145 100 L 115 130"
+          fill="none"
+          stroke="#4da3ff"
+          stroke-width="12"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
   </section>
 
   <section class="panel upper-middle-1">Upper Middle 1</section>
