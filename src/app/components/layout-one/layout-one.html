@@ -28,7 +28,9 @@
         />
       </svg>
     </div>
-    <span class="video-size">{{ renderedWidth() | number:'1.0-0' }} x {{ renderedHeight() | number:'1.0-0' }}</span>
+    <span class="video-size"
+      >{{ renderedWidth() | number: '1.0-0' }} x {{ renderedHeight() | number: '1.0-0' }}</span
+    >
   </section>
 
   <section class="panel upper-middle-1">Upper Middle 1</section>
@@ -45,7 +47,9 @@
   </section>
   <section class="panel upper-right-2">Upper Right 2</section>
   <section class="panel upper-right-3">Upper Right 3</section>
-  <section class="panel gutter"><mat-icon>close</mat-icon><mat-icon>settings</mat-icon></section>
+  <section class="panel gutter">
+    <mat-icon class="cutup-button">keyboard_tab</mat-icon><mat-icon>settings</mat-icon>
+  </section>
 
   <section class="grid-bottom">Grid Bottom</section>
 </div>
