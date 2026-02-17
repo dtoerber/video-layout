@@ -5,6 +5,7 @@ import {
   DestroyRef,
   ElementRef,
   inject,
+  NgZone,
   Renderer2,
   signal,
   viewChild,
@@ -26,6 +27,7 @@ export class LayoutOne {
   protected readonly resizeService = inject(ResizeService);
   private readonly renderer = inject(Renderer2);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly ngZone = inject(NgZone);
 
   private readonly videoSection = viewChild.required<ElementRef<HTMLElement>>('videoSection');
 
@@ -33,8 +35,10 @@ export class LayoutOne {
   protected readonly renderedHeight = signal(0);
 
   private readonly resizeObserver = new ResizeObserver(([entry]) => {
-    this.renderedWidth.set(Math.round(entry.contentRect.width));
-    this.renderedHeight.set(Math.round(entry.contentRect.height));
+    this.ngZone.run(() => {
+      this.renderedWidth.set(Math.round(entry.contentRect.width));
+      this.renderedHeight.set(Math.round(entry.contentRect.height));
+    });
   });
 
   constructor() {
