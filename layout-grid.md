@@ -18,16 +18,16 @@ Shared breakpoint mixins live in `src/styles/_breakpoints.scss` and are availabl
 
 1. **Base** — Mobile portrait (no media query)
 2. **Tablet** — `min-width: 769px`
-3. **Desktop** — `min-width: 1200px`
-4. **Ultrawide** — `min-aspect-ratio: 2/1` + `min-width: 1200px`
+3. **Desktop** — `min-width: 1180px`
+4. **Ultrawide** — `min-aspect-ratio: 2/1` + `min-width: 1180px`
 5. **Mobile landscape** — `max-height: 480px` + `orientation: landscape` (last, so it overrides all width-based breakpoints)
 
 ### CSS Custom Property Chain
 
-All layout dimensions derive from a single input: `--video-width` (set via Angular signal binding). CSS computes a single derived property:
+All layout dimensions derive from a single input: `--video-width` (set via `AsyncPipe` binding from `ResizeService.videoWidth$`). CSS computes a single derived property:
 
 ```
---video-width (input from ResizeService signal)
+--video-width (input from ResizeService observable)
   → --actual-video-width = min(
       video-width,
       100% - 600px,
@@ -125,7 +125,7 @@ Rows: auto auto auto minmax(200px, 1fr)
 
 ### 4. Desktop
 
-**Media query:** `(min-width: 1200px)`
+**Media query:** `(min-width: 1180px)`
 
 - 4-column grid: video | upper-middle panels (minmax 360px–1fr) | upper-right panels (200px) | gutter (40px)
 - Video spans 3 rows on the left, sized by `--actual-video-width` with `aspect-ratio: 16/9`
@@ -135,12 +135,12 @@ Rows: auto auto auto minmax(200px, 1fr)
 
 ```
 Columns: [actual-video-width] [minmax(360px, 1fr)] [200px] [40px]
-Rows:    [45px] [45px] [auto] [minmax(200px, 1fr)]
+Rows:    [60px] [60px] [auto] [minmax(200px, 1fr)]
 ```
 
 ### 5. Ultrawide
 
-**Media query:** `(min-aspect-ratio: 2/1) and (min-width: 1200px)`
+**Media query:** `(min-aspect-ratio: 2/1) and (min-width: 1180px)`
 
 - Video takes full page height (`--actual-video-width` = `(100vh - nav) * 16/9`)
 - Grid-bottom moves beside the video in the 4th row instead of below it
@@ -165,19 +165,36 @@ Rows:    [45px] [45px] [auto] [minmax(200px, 1fr)]
 | ----------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `src/styles/_breakpoints.scss`                  | Shared breakpoint mixins and layout constants                                        |
 | `src/app/components/layout-one/grid.scss`       | Grid definitions, CSS custom properties, all 5 layout modes (mobile-first)           |
-| `src/app/components/layout-one/layout-one.scss` | Video section styling, resizer handle                                                |
-| `src/app/components/layout-one/layout-one.html` | Flat grid structure with 9 children, `--video-width` binding                         |
-| `src/app/components/layout-one/layout-one.ts`   | Resize drag handling via Renderer2, injects ResizeService                            |
-| `src/app/services/resize.service.ts`            | `videoWidth` signal (input), `videoHeight` computed signal                           |
+| `src/app/components/layout-one/layout-one.scss` | Video section styling, resizer handle, video-size overlay, gutter                   |
+| `src/app/components/layout-one/layout-one.html` | Flat grid structure with 9 children, `--video-width` binding, S/M/L/* size toggles  |
+| `src/app/components/layout-one/layout-one.ts`   | Resize drag handling via Renderer2, ResizeObserver for dimensions, size presets      |
+| `src/app/components/layout-one/resize.service.ts` | `videoWidth$` BehaviorSubject (observable), `customWidth` for `*` preset           |
 | `src/app/components/nav/nav.component.scss`     | Toolbar hidden in mobile landscape (uses shared mixin)                               |
 
 ## Video Resize
 
-The video section has a drag handle on its right edge. Dragging updates `ResizeService.videoWidth`, which flows into the `--video-width` CSS custom property. `--actual-video-width` recalculates automatically via `min()` — no JavaScript dimension logic needed.
+The video section has a drag handle on its right edge. Dragging updates `ResizeService.videoWidth$`, which flows into the `--video-width` CSS custom property. `--actual-video-width` recalculates automatically via `min()` — no JavaScript dimension logic needed.
 
 - Minimum width: 200px (enforced in ResizeService)
 - Maximum width: constrained by `min()` to `100% - 600px` (container-relative, accounts for sidenav)
 - Maximum height: constrained by `min()` to `(100vh - nav - min-grid-height) * 16/9`, ensuring grid-bottom has space
+
+### Size Presets (S / M / L / *)
+
+The `upper-right-1` panel contains a `mat-button-toggle-group` with four presets:
+
+| Button | Behavior                                                                                    |
+| ------ | ------------------------------------------------------------------------------------------- |
+| `S`    | 50% of `maxVideoWidth` (computed from window dimensions)                                    |
+| `M`    | 75% of `maxVideoWidth`                                                                      |
+| `L`    | Full `window.innerWidth` (effectively the CSS `min()` cap)                                  |
+| `*`    | Restores the last custom drag width saved by `saveCustomWidth()`, or no-op if none saved    |
+
+`maxVideoWidth` is computed as `min(window.innerWidth - 600, (window.innerHeight - 38 - 200) * 16/9)`, mirroring the CSS `min()` constraint in JavaScript. Dragging the resizer sets `selectedSize = '*'` and calls `saveCustomWidth()` on mouse-up.
+
+## Video Dimensions Overlay
+
+A `ResizeObserver` watches the `.video` section element. On every resize it updates `renderedWidth` and `renderedHeight` (rounded integers), which are displayed in an overlay badge (`position: absolute; top-right`) formatted as `W x H`. This reflects the actual rendered pixel size after CSS constraints are applied.
 
 ## Video Element
 
@@ -195,17 +212,19 @@ All layout modes use CSS media queries on **viewport dimensions**, not `screen.w
 | ---------------- | ---------------------------------------------------------- |
 | Mobile Portrait  | 375 x 812 (or any width < 769px, portrait)                |
 | Mobile Landscape | 812 x 375 (or any height < 480px, landscape)              |
-| Tablet           | 820 x 1180 (or any width 769–1199px)                      |
+| Tablet           | 820 x 1180 (or any width 769–1179px)                      |
 | Desktop          | 1920 x 1080                                               |
-| Ultrawide        | 2560 x 1080 (or any width:height > 2:1 and width > 1200px)|
+| Ultrawide        | 2560 x 1080 (or any width:height > 2:1 and width > 1180px)|
 | Edge: 1024 x 450 | Mobile landscape wins (fullscreen video)                  |
 
 ## Configuration
 
 SCSS variables in `src/styles/_breakpoints.scss`:
 
-| Variable           | Default | Purpose                                   |
-| ------------------ | ------- | ----------------------------------------- |
-| `$nav-height`      | `38px`  | Height of the navigation toolbar          |
-| `$min-grid-height` | `200px` | Minimum guaranteed height for grid-bottom |
-| `$gap`             | `0px`   | Gap between grid cells                    |
+| Variable           | Default  | Purpose                                   |
+| ------------------ | -------- | ----------------------------------------- |
+| `$nav-height`      | `38px`   | Height of the navigation toolbar          |
+| `$min-grid-height` | `200px`  | Minimum guaranteed height for grid-bottom |
+| `$gap`             | `0px`    | Gap between grid cells                    |
+| `$desktop-min-width` | `1180px` | Desktop/ultrawide breakpoint threshold  |
+| `$tablet-min-width`  | `769px`  | Tablet breakpoint threshold             |
