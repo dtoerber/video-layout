@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AsyncPipe } from '@angular/common';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -9,7 +9,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { Observable, fromEvent, startWith } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-nav',
@@ -35,11 +34,8 @@ export class NavComponent {
     shareReplay(),
   );
 
-  dimensions = toSignal(
-    fromEvent(window, 'resize').pipe(
-      startWith(null),
-      map(() => `${window.innerWidth} x ${window.innerHeight}`),
-    ),
-    { initialValue: `${window.innerWidth} x ${window.innerHeight}` },
+  dimensions$ = fromEvent(window, 'resize').pipe(
+    startWith(null),
+    map(() => `${window.innerWidth} x ${window.innerHeight}`),
   );
 }

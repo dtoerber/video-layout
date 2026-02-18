@@ -1,4 +1,4 @@
-<div class="page" [style.--video-width.px]="resizeService.videoWidth()">
+<div class="page" [style.--video-width.px]="resizeService.videoWidth$ | async">
   <section class="video" #videoSection>
     <img src="https://placehold.co/1600x900/1a1a1a/4da3ff" alt="placeholder" />
     <div class="resizer" (mousedown)="startResizing($event)">
@@ -29,7 +29,7 @@
       </svg>
     </div>
     <span class="video-size"
-      >{{ renderedWidth() | number: '1.0-0' }} x {{ renderedHeight() | number: '1.0-0' }}</span
+      >{{ renderedWidth | number: '1.0-0' }} x {{ renderedHeight | number: '1.0-0' }}</span
     >
   </section>
 
@@ -38,7 +38,7 @@
   <section class="panel upper-middle-3">Upper Middle 3</section>
 
   <section class="panel upper-right-1">
-    <mat-button-toggle-group hideSingleSelectionIndicator>
+    <mat-button-toggle-group hideSingleSelectionIndicator [value]="selectedSize">
       <mat-button-toggle value="S" (click)="setVideoSize('S')">S</mat-button-toggle>
       <mat-button-toggle value="M" (click)="setVideoSize('M')">M</mat-button-toggle>
       <mat-button-toggle value="L" (click)="setVideoSize('L')">L</mat-button-toggle>

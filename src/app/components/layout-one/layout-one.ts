@@ -1,51 +1,54 @@
 import {
-  afterNextRender,
+  AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  DestroyRef,
   ElementRef,
-  inject,
   NgZone,
+  OnDestroy,
   Renderer2,
-  signal,
-  viewChild,
+  ViewChild,
+  inject,
 } from '@angular/core';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { ResizeService } from './resize.service';
-import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-layout-one',
-  imports: [MatButtonModule, MatIconModule, MatButtonToggleModule, DecimalPipe],
+  imports: [MatButtonModule, MatIconModule, MatButtonToggleModule, DecimalPipe, AsyncPipe],
   templateUrl: './layout-one.html',
   styleUrls: ['./layout-one.scss', './grid.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LayoutOne {
+export class LayoutOne implements AfterViewInit, OnDestroy {
   protected readonly resizeService = inject(ResizeService);
   private readonly renderer = inject(Renderer2);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly ngZone = inject(NgZone);
+  private readonly cdr = inject(ChangeDetectorRef);
 
-  private readonly videoSection = viewChild.required<ElementRef<HTMLElement>>('videoSection');
+  @ViewChild('videoSection') private readonly videoSection!: ElementRef<HTMLElement>;
 
-  protected readonly renderedWidth = signal(0);
-  protected readonly renderedHeight = signal(0);
+  protected renderedWidth = 0;
+  protected renderedHeight = 0;
+  protected selectedSize = '';
 
   private readonly resizeObserver = new ResizeObserver(([entry]) => {
     this.ngZone.run(() => {
-      this.renderedWidth.set(Math.round(entry.contentRect.width));
-      this.renderedHeight.set(Math.round(entry.contentRect.height));
+      this.renderedWidth = Math.round(entry.contentRect.width);
+      this.renderedHeight = Math.round(entry.contentRect.height);
+      this.cdr.markForCheck();
     });
   });
 
-  constructor() {
-    afterNextRender(() => {
-      this.resizeObserver.observe(this.videoSection().nativeElement);
-    });
-    this.destroyRef.onDestroy(() => this.resizeObserver.disconnect());
+  ngAfterViewInit(): void {
+    this.resizeObserver.observe(this.videoSection.nativeElement);
+  }
+
+  ngOnDestroy(): void {
+    this.resizeObserver.disconnect();
   }
 
   private get maxVideoWidth(): number {
@@ -64,6 +67,7 @@ export class LayoutOne {
     if (!videoElement) return;
 
     const offsetLeft = videoElement.getBoundingClientRect().left;
+    this.selectedSize = '*';
 
     this.mouseMoveListener = this.renderer.listen('document', 'mousemove', (e: MouseEvent) => {
       this.resizeService.updateWidth(e.clientX - offsetLeft);
@@ -75,16 +79,24 @@ export class LayoutOne {
   }
 
   setVideoSize(size: string): void {
-    const presets: Record<string, number> = {
-      S: this.maxVideoWidth * 0.5,
-      M: this.maxVideoWidth * 0.75,
-      L: window.innerWidth,
-      '*': this.resizeService.videoWidth(),
-    };
-    this.resizeService.updateWidth(presets[size] ?? this.maxVideoWidth);
+    if (size === '*') {
+      const custom = this.resizeService.customWidth;
+      if (custom !== null) {
+        this.resizeService.updateWidth(custom);
+      }
+    } else {
+      const presets: Record<string, number> = {
+        S: this.maxVideoWidth * 0.5,
+        M: this.maxVideoWidth * 0.75,
+        L: window.innerWidth,
+      };
+      this.resizeService.updateWidth(presets[size] ?? this.maxVideoWidth);
+    }
+    this.selectedSize = size;
   }
 
   private stopResizing(): void {
+    this.resizeService.saveCustomWidth();
     this.mouseMoveListener?.();
     this.mouseUpListener?.();
     this.mouseMoveListener = undefined;
