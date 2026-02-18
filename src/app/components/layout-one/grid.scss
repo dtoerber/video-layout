@@ -98,6 +98,12 @@
   width: 100%;
 }
 
+.panel,
+.gutter,
+.resizer {
+  display: none;
+}
+
 // =============================================================================
 // 2. Tablet (min-width: 769px)
 // Video full-width top, 6 panels in 3-col grid, grid-bottom bottom
@@ -105,25 +111,15 @@
 
 @include bp.tablet {
   .page {
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: auto auto auto minmax(#{bp.$min-grid-height}, 1fr);
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(#{bp.$min-grid-height}, 1fr);
     grid-template-areas:
-      'video           video           video'
-      'upper-middle-1  upper-middle-2  upper-middle-3'
-      'upper-right-1   upper-right-2   upper-right-3'
-      'bottom          bottom          bottom';
+      'video'
+      'bottom';
   }
 
   .video {
     width: 100%;
-  }
-
-  .panel {
-    display: block;
-  }
-
-  .panel.upper-right-1 {
-    display: flex;
   }
 
   .gutter,
