@@ -105,22 +105,20 @@ Grid areas are reassigned via `grid-template-areas` in each media query — the 
 **Media query:** `(min-width: 769px)`
 
 - Video spans full width at top
-- 6 panels shown in a 3-column grid below the video
-- Grid-bottom at the bottom spanning full width
+- All upper panels hidden (same as mobile portrait)
+- Grid-bottom fills remaining space below
 - Gutter and resizer hidden
 
 ```
-┌───────────────┬───────────────┬───────────────┐
-│               video (spans 3)                 │
-├───────────────┼───────────────┼───────────────┤
-│ upper-middle-1│ upper-middle-2│ upper-middle-3│
-├───────────────┼───────────────┼───────────────┤
-│ upper-right-1 │ upper-right-2 │ upper-right-3 │
-├───────────────┴───────────────┴───────────────┤
-│              grid-bottom                      │
-└───────────────────────────────────────────────┘
-Columns: 1fr 1fr 1fr
-Rows: auto auto auto minmax(200px, 1fr)
+┌──────────────────┐
+│      video       │
+├──────────────────┤
+│                  │
+│   grid-bottom    │
+│                  │
+└──────────────────┘
+Columns: 1fr
+Rows: auto minmax(200px, 1fr)
 ```
 
 ### 4. Desktop

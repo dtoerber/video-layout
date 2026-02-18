@@ -6,6 +6,7 @@
 
 .video {
   grid-area: video;
+  display: flex;
 }
 .upper-middle-1 {
   grid-area: upper-middle-1;
@@ -30,51 +31,6 @@
 }
 .grid-bottom {
   grid-area: bottom;
-}
-
-// =============================================================================
-// Panel Sections
-// =============================================================================
-
-.panel {
-  background: #333;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  overflow: hidden;
-  min-height: 0;
-  padding: 8px;
-}
-
-.upper-middle-1,
-.upper-middle-2,
-.upper-middle-3 {
-  border-color: green;
-}
-
-.upper-right-1,
-.upper-right-2,
-.upper-right-3 {
-  border-color: purple;
-}
-
-.panel.upper-right-1 {
-  justify-content: center;
-}
-
-.gutter {
-  border-color: cyan;
-}
-
-// =============================================================================
-// Grid Bottom
-// =============================================================================
-
-.grid-bottom {
-  background: #2a2a2a;
-  border: 1px solid red;
-  overflow: auto;
-  min-height: 0;
-  container-type: size;
-  container-name: playgrid;
 }
 
 // =============================================================================
@@ -106,7 +62,7 @@
 
 // =============================================================================
 // 2. Tablet (min-width: 769px)
-// Video full-width top, 6 panels in 3-col grid, grid-bottom bottom
+// Video full-width top, panels hidden, grid-bottom bottom
 // =============================================================================
 
 @include bp.tablet {
@@ -129,7 +85,7 @@
 }
 
 // =============================================================================
-// 3. Desktop (min-width: 1200px)
+// 3. Desktop (min-width: 1180px)
 // 4-column layout, all panels visible, resizer visible
 // =============================================================================
 
@@ -160,14 +116,26 @@
     display: block;
   }
 
-  .gutter,
+  .panel.upper-right-1 {
+    display: flex;
+  }
+
+  .gutter {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
   .resizer {
     display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
   }
 }
 
 // =============================================================================
-// 4. Ultrawide (min-aspect-ratio: 2/1 + min-width: 1200px)
+// 4. Ultrawide (min-aspect-ratio: 2/1 + min-width: 1180px)
 // Video full height, grid-bottom beside video
 // =============================================================================
 

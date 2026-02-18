@@ -12,6 +12,7 @@
 
   img {
     width: 100%;
+    max-width: 100%;
     object-fit: contain;
     border: 1px dashed blue;
   }
@@ -25,17 +26,8 @@
 // Resizer Handle
 // =============================================================================
 
-.video {
-  position: relative;
-  display: flex;
-
-  img {
-    max-width: 100%;
-  }
-}
-
 .resizer {
-  width: 6px; // Increased slightly for better visibility
+  width: 6px;
   height: 100%;
   position: absolute;
   right: 0;
@@ -45,15 +37,7 @@
   background: transparent;
   transition: background 0.2s;
 
-  // Crucial: Allows the circular button to be wider than the 4px bar
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: visible;
-
   &:hover {
-    // background: #4da3ff;
-
     .resizer-icon {
       opacity: 1;
       transform: scale(1) translateX(3px);
@@ -97,8 +81,47 @@
   font-family: monospace;
 }
 
+// =============================================================================
+// Panel Sections
+// =============================================================================
+
+.panel {
+  background: #333;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  min-height: 0;
+  padding: 8px;
+}
+
+.upper-middle-1,
+.upper-middle-2,
+.upper-middle-3 {
+  border-color: orange;
+}
+
+.upper-right-1,
+.upper-right-2,
+.upper-right-3 {
+  border-color: hotpink;
+}
+
+.panel.upper-right-1 {
+  justify-content: center;
+}
+
 .gutter {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  border-color: yellow;
+}
+
+// =============================================================================
+// Grid Bottom
+// =============================================================================
+
+.grid-bottom {
+  background: #2a2a2a;
+  border: 1px solid red;
+  overflow: auto;
+  min-height: 0;
+  container-type: size;
+  container-name: playgrid;
 }
