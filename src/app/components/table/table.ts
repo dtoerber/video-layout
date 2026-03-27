@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 export interface ColumnDef {
   key: string;
@@ -116,8 +116,12 @@ export class Table {
     this.dragOverIndex.set(index);
   }
 
-  onDragLeave(): void {
-    this.dragOverIndex.set(null);
+  onDragLeave(event: DragEvent): void {
+    const th = event.currentTarget as HTMLElement;
+    const relatedTarget = event.relatedTarget as Node | null;
+    if (!relatedTarget || !th.contains(relatedTarget)) {
+      this.dragOverIndex.set(null);
+    }
   }
 
   onDrop(event: DragEvent, dropIndex: number): void {
@@ -127,14 +131,10 @@ export class Table {
       this.clearDragState();
       return;
     }
-
-    // Reorder only among visible columns, then rebuild the full column list
     const visible = this.visibleColumns();
     const reordered = [...visible];
     const [moved] = reordered.splice(from, 1);
     reordered.splice(dropIndex, 0, moved);
-
-    // Preserve hidden columns at their original positions (append after visible)
     const hidden = this.columns().filter((c) => !c.visible);
     this.columns.set([...reordered, ...hidden]);
     this.clearDragState();
@@ -157,12 +157,12 @@ export class Table {
     );
   }
 
-  // ── CDK drop (backup / alternative) ───────────────────────────────────────
+  isDraggedCol(index: number): boolean {
+    return this.draggedIndex() === index;
+  }
 
-  cdkDropped(event: CdkDragDrop<ColumnDef[]>): void {
-    const cols = [...this.columns()];
-    moveItemInArray(cols, event.previousIndex, event.currentIndex);
-    this.columns.set(cols);
+  isDragOverCol(index: number): boolean {
+    return this.dragOverIndex() === index && this.draggedIndex() !== index;
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
@@ -179,13 +179,5 @@ export class Table {
 
   getStatusClass(status: string): string {
     return status.toLowerCase();
-  }
-
-  isDraggedCol(index: number): boolean {
-    return this.draggedIndex() === index;
-  }
-
-  isDragOverCol(index: number): boolean {
-    return this.dragOverIndex() === index && this.draggedIndex() !== index;
   }
 }

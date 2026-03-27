@@ -54,7 +54,7 @@
             draggable="true"
             (dragstart)="onDragStart($index)"
             (dragover)="onDragOver($event, $index)"
-            (dragleave)="onDragLeave()"
+            (dragleave)="onDragLeave($event)"
             (drop)="onDrop($event, $index)"
             (dragend)="onDragEnd()"
           >
@@ -62,16 +62,10 @@
               <mat-icon class="drag-handle-icon">drag_indicator</mat-icon>
               <span class="col-label">{{ col.label }}</span>
             </div>
-            <div class="drop-indicator"></div>
           </th>
 
           <!-- Data cell -->
-          <td
-            mat-cell
-            *matCellDef="let row"
-            [class.numeric]="isNumeric(col.key)"
-            [class.col-dragging]="isDraggedCol($index)"
-          >
+          <td mat-cell *matCellDef="let row" [class.numeric]="isNumeric(col.key)" [class.col-dragging]="isDraggedCol($index)">
             @if (col.key === 'status') {
               <span class="status-badge" [class]="'status-badge ' + getStatusClass($any(row).status)">
                 {{ $any(row).status }}

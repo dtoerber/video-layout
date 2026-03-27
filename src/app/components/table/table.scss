@@ -220,11 +220,7 @@
     // Something being dragged over this column
     &.col-drag-over {
       background: var(--drag-over-bg) !important;
-
-      .drop-indicator {
-        opacity: 1;
-        transform: scaleY(1);
-      }
+      border-left: 2px solid var(--accent) !important;
     }
   }
 
@@ -288,24 +284,6 @@
 
 .col-label {
   flex: 1;
-}
-
-// ── Drop indicator (left border flash) ───────────────────────────────────────
-.drop-indicator {
-  position: absolute;
-  left: 0;
-  top: 6px;
-  bottom: 6px;
-  width: 2px;
-  background: var(--accent);
-  border-radius: 1px;
-  opacity: 0;
-  transform: scaleY(0.5);
-  transform-origin: center;
-  transition:
-    opacity 0.12s ease,
-    transform 0.12s ease;
-  box-shadow: 0 0 8px var(--accent-glow);
 }
 
 // ── Special cell renderers ────────────────────────────────────────────────────
