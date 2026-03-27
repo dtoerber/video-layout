@@ -1,0 +1,408 @@
+// ── Design tokens ─────────────────────────────────────────────────────────────
+:host {
+  --bg-shell: #0d0f14;
+  --bg-surface: #13161e;
+  --bg-header: #1a1e2a;
+  --bg-row-even: #13161e;
+  --bg-row-odd: #151820;
+  --bg-row-hover: #1f2435;
+  --accent: #4f8ef7;
+  --accent-glow: rgba(79, 142, 247, 0.25);
+  --accent-dim: rgba(79, 142, 247, 0.12);
+  --text-primary: #e8ecf5;
+  --text-secondary: #7a85a0;
+  --text-muted: #4a5068;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-accent: rgba(79, 142, 247, 0.5);
+  --drag-over-bg: rgba(79, 142, 247, 0.08);
+  --drag-active-bg: rgba(79, 142, 247, 0.04);
+  --radius: 12px;
+  --radius-sm: 6px;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  // Status colours
+  --status-active: #22c55e;
+  --status-active-bg: rgba(34, 197, 94, 0.12);
+  --status-injured: #f59e0b;
+  --status-injured-bg: rgba(245, 158, 11, 0.12);
+  --status-suspended: #ef4444;
+  --status-suspended-bg: rgba(239, 68, 68, 0.12);
+
+  // Header row height — used for sticky section offset
+  --header-row-height: 32px;
+
+  display: block;
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg-shell);
+  min-height: 100vh;
+  padding: 16px;
+  box-sizing: border-box;
+  color: var(--text-primary);
+}
+
+// ── Shell ─────────────────────────────────────────────────────────────────────
+.table-shell {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  // clip instead of hidden so position:sticky inside still works
+  overflow: clip;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 24px 64px rgba(0, 0, 0, 0.6),
+    0 0 120px rgba(79, 142, 247, 0.04);
+}
+
+// ── Header bar ────────────────────────────────────────────────────────────────
+.table-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-primary);
+}
+
+.title-icon {
+  color: var(--accent);
+  font-size: 15px;
+}
+
+.title-badge {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 2px 7px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid var(--border-accent);
+  border-radius: 20px;
+  font-family: var(--font-mono);
+}
+
+// ── Column toggles ────────────────────────────────────────────────────────────
+.column-toggles {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.toggles-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-right: 2px;
+}
+
+.toggle-chip {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  padding: 2px 8px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  letter-spacing: 0.02em;
+
+  &:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  &.active {
+    background: var(--accent-dim);
+    border-color: var(--border-accent);
+    color: var(--accent);
+  }
+}
+
+// ── Drag hint ─────────────────────────────────────────────────────────────────
+.drag-hint {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 16px;
+  background: rgba(79, 142, 247, 0.04);
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.hint-icon {
+  font-size: 13px;
+  width: 13px;
+  height: 13px;
+  color: var(--accent);
+  opacity: 0.6;
+}
+
+// ── Table scroll wrapper ──────────────────────────────────────────────────────
+.table-scroll-wrapper {
+  overflow: auto;
+  max-height: 460px;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--bg-surface);
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+  }
+}
+
+// ── mat-table overrides ───────────────────────────────────────────────────────
+.draggable-mat-table {
+  width: 100%;
+  background: transparent !important;
+
+  // Header row
+  .mat-mdc-header-row {
+    background: var(--bg-header) !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+
+  // Header cell
+  .mat-mdc-header-cell {
+    background: var(--bg-header);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-bottom: none !important;
+    white-space: nowrap;
+    position: relative;
+    cursor: grab;
+    user-select: none;
+    transition: background 0.15s ease;
+    padding: 0 10px !important;
+    z-index: 3;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &:hover {
+      background: rgba(79, 142, 247, 0.06) !important;
+
+      .drag-handle-icon {
+        opacity: 1;
+      }
+    }
+
+    // Dragging this column
+    &.col-dragging {
+      background: var(--drag-active-bg) !important;
+      opacity: 0.5;
+    }
+
+    // Something being dragged over this column
+    &.col-drag-over {
+      background: var(--drag-over-bg) !important;
+
+      .drop-indicator {
+        opacity: 1;
+        transform: scaleY(1);
+      }
+    }
+  }
+
+  // Data rows
+  .mat-mdc-row {
+    background: var(--bg-row-even);
+    border-bottom: 1px solid var(--border) !important;
+    transition: background 0.12s ease;
+
+    &:nth-child(odd) {
+      background: var(--bg-row-odd);
+    }
+    &:last-child {
+      border-bottom: none !important;
+    }
+
+    &:hover {
+      background: var(--bg-row-hover) !important;
+    }
+  }
+
+  // Data cells
+  .mat-mdc-cell {
+    color: var(--text-primary);
+    font-size: 12px;
+    border-bottom: none !important;
+    white-space: nowrap;
+    padding: 7px 10px !important;
+    transition: background 0.12s ease;
+
+    &.numeric {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      text-align: right;
+    }
+
+    &.col-dragging {
+      opacity: 0.4;
+    }
+  }
+}
+
+// ── Header inner layout ───────────────────────────────────────────────────────
+.th-inner {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: var(--header-row-height);
+}
+
+.drag-handle-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+  color: var(--accent);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.col-label {
+  flex: 1;
+}
+
+// ── Drop indicator (left border flash) ───────────────────────────────────────
+.drop-indicator {
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  background: var(--accent);
+  border-radius: 1px;
+  opacity: 0;
+  transform: scaleY(0.5);
+  transform-origin: center;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+// ── Special cell renderers ────────────────────────────────────────────────────
+.player-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.rating-value {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 6px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  &.active {
+    color: var(--status-active);
+    background: var(--status-active-bg);
+  }
+  &.injured {
+    color: var(--status-injured);
+    background: var(--status-injured-bg);
+  }
+  &.suspended {
+    color: var(--status-suspended);
+    background: var(--status-suspended-bg);
+  }
+}
+
+// ── Section header rows ───────────────────────────────────────────────────────
+.section-row {
+  .mat-mdc-cell {
+    padding: 0 !important;
+    border-bottom: none !important;
+  }
+}
+
+.section-header-cell {
+  padding: 0 !important;
+  position: sticky;
+  top: var(--header-row-height);
+  z-index: 2;
+  background: var(--bg-surface);
+}
+
+.section-header-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px 6px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-surface);
+}
+
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.section-count {
+  font-size: 10px;
+  font-family: var(--font-mono);
+  padding: 1px 6px;
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: 1px solid var(--border-accent);
+  border-radius: 20px;
+}
+
+// ── Footer ───────────────────────────────────────────────────────────────────
+.table-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-header);
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.footer-divider {
+  color: var(--text-muted);
+  opacity: 0.4;
+}
